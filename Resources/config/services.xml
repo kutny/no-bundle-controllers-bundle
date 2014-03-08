@@ -4,13 +4,15 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
-    <parameters>
-        <parameter key="sensio_framework_extra.view.guesser.class">Kutny\NoBundleControllersBundle\TemplateGuesser</parameter>
-    </parameters>
-
     <services>
+		<service id="kutny.no_bundle_controllers.template_resolver" class="Kutny\NoBundleControllersBundle\TemplateResolver">
+			<argument type="service" id="kernel" />
+		</service>
         <service id="kutny.no_bundle_controllers.controller_routing_loader" class="Kutny\NoBundleControllersBundle\Routing\ControllerRoutingLoader">
             <tag name="routing.loader" />
         </service>
+		<service id="sensio_framework_extra.view.guesser" class="Kutny\NoBundleControllersBundle\TemplateGuesser">
+			<argument type="service" id="kutny.no_bundle_controllers.template_resolver" />
+		</service>
     </services>
 </container>
