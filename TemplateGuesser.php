@@ -3,40 +3,35 @@
 namespace Kutny\NoBundleControllersBundle;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Bundle\FrameworkBundle\Templating\TemplateReference;
-use Doctrine\Common\Util\ClassUtils;
+use Symfony\Component\Templating\TemplateReference;
 
 class TemplateGuesser
 {
-	private $templateResolver;
+    private $templatesDir;
+    private $templateResolver;
+    private $sensioTemplateGuesser;
 
-	public function __construct(TemplateResolver $templateResolver) {
-		$this->templateResolver = $templateResolver;
-	}
+    public function __construct(
+        $templatesDir,
+        TemplateResolver $templateResolver,
+        \Sensio\Bundle\FrameworkExtraBundle\Templating\TemplateGuesser $sensioTemplateGuesser
+    ) {
+        $this->templatesDir = $templatesDir;
+        $this->templateResolver = $templateResolver;
+        $this->sensioTemplateGuesser = $sensioTemplateGuesser;
+    }
 
-	/**
-	 * Guesses and returns the template name to render based on the controller
-	 * and action names.
-	 *
-	 * @param  array                     $controller An array storing the controller object and action method
-	 * @param  Request                   $request    A Request instance
-	 * @param  string                    $engine
-	 * @return TemplateReference         template reference
-	 * @throws \InvalidArgumentException
-	 */
-	public function guessTemplateName($controller, Request $request, $engine = 'twig')
-	{
-		$className = class_exists('Doctrine\Common\Util\ClassUtils') ? ClassUtils::getClass($controller[0]) : get_class($controller[0]);
+    public function guessTemplateName($controller, Request $request, $engine = 'twig')
+    {
+        $controllerClassName = get_class($controller[0]);
 
-		$resolvedTemplate = $this->templateResolver->resolve($className, $controller[1]);
+        if ($request->attributes->get('_template') instanceof Template) {
+            $templatePath = $this->templateResolver->getTemplatePath($controllerClassName, $controller[1]);
 
-		return new TemplateReference(
-			$resolvedTemplate->getBundleName() . 'Bundle',
-			$resolvedTemplate->getControllerName(),
-			$resolvedTemplate->getActionName(),
-			$request->getRequestFormat(),
-			$engine
-		);
-	}
+            return new TemplateReference($this->templatesDir . '/' . $templatePath, $engine);
+        }
+
+        return $this->sensioTemplateGuesser->guessTemplateName($controller, $request, $engine);
+    }
 
 }

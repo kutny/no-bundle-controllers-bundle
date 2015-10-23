@@ -7,12 +7,10 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class KutnyNoBundleControllersBundle extends Bundle
 {
-
     public function build(ContainerBuilder $container)
     {
         $container->addCompilerPass(
             new FindControllerServicesCompilerPass()
         );
     }
-
 }

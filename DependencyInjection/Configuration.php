@@ -21,12 +21,12 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('main_bundle_namespace')
-                    ->isRequired()
-                    ->end()
-                ->arrayNode('apply_to_namespaces')
+                ->arrayNode('templates_namespaces')
                     ->isRequired()
                     ->prototype('scalar')->end()
+                ->end()
+                ->scalarNode('templates_dir')
+                    ->defaultNull()
                     ->end()
                 ->end()
             ->end();

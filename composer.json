@@ -2,7 +2,7 @@
 	"name": "kutny/no-bundle-controllers-bundle",
 	"type": "symfony-bundle",
 	"description": "",
-	"keywords": ["Controller", "Symfony Bundle"],
+	"keywords": ["Controller", "Templating", "Twig", "Symfony Bundle"],
 	"homepage": "https://github.com/kutny/no-bundle-controllers-bundle",
 	"license": "MIT",
 	"authors": [
@@ -12,7 +12,8 @@
 		}
 	],
 	"require": {
-		"php": ">=5.3.2"
+		"php": ">=5.5",
+        "sensio/framework-extra-bundle": "^3.0.2"
 	},
 	"autoload": {
 		"psr-0": { "Kutny\\NoBundleControllersBundle": "" }

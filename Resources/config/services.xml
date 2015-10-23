@@ -12,7 +12,12 @@
             <tag name="routing.loader" />
         </service>
 		<service id="sensio_framework_extra.view.guesser" class="Kutny\NoBundleControllersBundle\TemplateGuesser">
+			<argument>%kutny_no_bundle_controllers.templates_dir%</argument>
 			<argument type="service" id="kutny.no_bundle_controllers.template_resolver" />
+			<argument type="service" id="sensio_framework_extra.view.guesser_original" />
+		</service>
+		<service id="sensio_framework_extra.view.guesser_original" class="Sensio\Bundle\FrameworkExtraBundle\Templating\TemplateGuesser">
+			<argument type="service" id="kernel" />
 		</service>
     </services>
 </container>

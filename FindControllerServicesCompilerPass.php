@@ -8,10 +8,15 @@ use Symfony\Component\DependencyInjection\Definition;
 
 class FindControllerServicesCompilerPass implements CompilerPassInterface
 {
-
     public function process(ContainerBuilder $containerBuilder)
     {
-        $controllerClasses = array();
+        $this->processTaggedControllers($containerBuilder);
+        $this->processTemplatesNamespace($containerBuilder);
+    }
+
+    private function processTaggedControllers(ContainerBuilder $containerBuilder)
+    {
+        $controllerClasses = [];
 
         $taggedControllerServices = $containerBuilder->findTaggedServiceIds('controller');
 
@@ -30,6 +35,20 @@ class FindControllerServicesCompilerPass implements CompilerPassInterface
         /** @var Definition $controllerRoutingLoaderDefinition */
         $controllerRoutingLoaderDefinition = $containerBuilder->getDefinition('kutny.no_bundle_controllers.controller_routing_loader');
         $controllerRoutingLoaderDefinition->addMethodCall('setControllerClasses', array($controllerClasses));
+    }
+
+    private function processTemplatesNamespace(ContainerBuilder $containerBuilder)
+    {
+        $templatesDir = $containerBuilder->getParameter('kutny_no_bundle_controllers.templates_dir');
+        $templatesNamespaces = $containerBuilder->getParameter('kutny_no_bundle_controllers.templates_namespaces');
+
+        if ($containerBuilder->hasDefinition('twig.loader.filesystem')) {
+            $loader = $containerBuilder->getDefinition('twig.loader.filesystem');
+
+            foreach ($templatesNamespaces as $templatesNamespace) {
+                $loader->addMethodCall('addPath', [$templatesDir . '/' . $templatesNamespace, $templatesNamespace]);
+            }
+        }
     }
 
 }
