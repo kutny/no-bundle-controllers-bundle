@@ -24,6 +24,7 @@ class TemplateGuesser
     public function guessTemplateName($controller, Request $request, $engine = 'twig')
     {
         $controllerClassName = get_class($controller[0]);
+        $controllerClassName = preg_replace('~^EnhancedProxy.+\\\\__CG__\\\\~', '', $controllerClassName);
 
         if ($request->attributes->get('_template') instanceof Template) {
             $templatePath = $this->templateResolver->getTemplatePath($controllerClassName, $controller[1]);
